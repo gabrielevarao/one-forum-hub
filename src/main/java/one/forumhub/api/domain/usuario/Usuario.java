@@ -1,6 +1,7 @@
 package one.forumhub.api.domain.usuario;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,6 +33,12 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Topico> topicos = new ArrayList<>();
+
+    public Usuario(@Valid DadosCadastroUsuario usuario) {
+        this.nome = usuario.nome();
+        this.email = usuario.email();
+        this.senha = usuario.senha();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,6 +73,10 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setSenha(String senha){
+        this.senha = senha;
     }
 
 }
