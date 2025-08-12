@@ -38,4 +38,8 @@ public class TopicoService {
                 .map(DadosListagemTopico::new);
     }
 
+    public DadosDetalhamentoTopico detalhar (Long id){
+        return new DadosDetalhamentoTopico(topicoRepository.getReferenceById(id));
+    }
+
 }
