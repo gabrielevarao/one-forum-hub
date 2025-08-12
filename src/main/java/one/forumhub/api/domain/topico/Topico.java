@@ -1,15 +1,13 @@
 package one.forumhub.api.domain.topico;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import one.forumhub.api.domain.usuario.Usuario;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -25,10 +23,20 @@ public class Topico {
     private String mensagem;
     private String curso;
     private LocalDateTime dataCriacao;
+    private TopicoStatus status;
     private boolean ativo;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario autor;
+
+    public Topico(DadosCadastroTopico dados, LocalDateTime data){
+        this.titulo = dados.titulo();
+        this.mensagem = dados.mensagem();
+        this.curso = dados.curso();
+        this.dataCriacao = data;
+        this.status = TopicoStatus.NAO_RESPONDIDO;
+        this.ativo = true;
+    }
 
 }

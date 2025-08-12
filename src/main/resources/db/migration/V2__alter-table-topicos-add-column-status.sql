@@ -1,0 +1,1 @@
+ALTER TABLE topicos ADD status varchar(100);
