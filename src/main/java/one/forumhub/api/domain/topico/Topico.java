@@ -23,7 +23,10 @@ public class Topico {
     private String mensagem;
     private String curso;
     private LocalDateTime dataCriacao;
+
+    @Enumerated(EnumType.STRING)
     private TopicoStatus status;
+
     private boolean ativo;
 
     @ManyToOne

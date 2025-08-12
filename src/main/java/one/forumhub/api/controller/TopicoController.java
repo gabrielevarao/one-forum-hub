@@ -2,18 +2,19 @@ package one.forumhub.api.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import one.forumhub.api.domain.topico.DadosCadastroTopico;
-import one.forumhub.api.domain.topico.DadosDetalhamentoTopico;
-import one.forumhub.api.domain.topico.TopicoService;
+import one.forumhub.api.domain.topico.*;
 import one.forumhub.api.domain.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/topicos")
@@ -21,6 +22,9 @@ public class TopicoController {
 
     @Autowired
     private TopicoService service;
+
+    @Autowired
+    private TopicoRepository repository;
 
     @PostMapping
     @Transactional
@@ -36,4 +40,11 @@ public class TopicoController {
 
         return ResponseEntity.created(uri).body(dadosDetalhamento);
     }
+
+    @GetMapping
+    public ResponseEntity<Page<DadosListagemTopico>> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(service.listar(pageable));
+    }
+
+
 }
