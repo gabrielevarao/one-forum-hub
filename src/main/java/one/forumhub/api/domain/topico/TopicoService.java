@@ -35,7 +35,7 @@ public class TopicoService {
     }
 
     public Page<DadosListagemTopico> listar(Pageable pageable) {
-        return topicoRepository.findAll(pageable)
+        return topicoRepository.findAllByAtivoTrue(pageable)
                 .map(DadosListagemTopico::new);
     }
 
@@ -55,6 +55,11 @@ public class TopicoService {
         }
 
         return new DadosDetalhamentoTopico(topico);
+    }
+
+    public void excluir(Long id){
+        Topico topico = topicoRepository.getReferenceById(id);
+        topico.setAtivo(false);
     }
 
 

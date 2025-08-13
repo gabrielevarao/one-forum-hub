@@ -14,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/topicos")
@@ -56,5 +55,14 @@ public class TopicoController {
     public ResponseEntity editar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaçãoTopico dados){
         return ResponseEntity.ok(service.editar(id, dados));
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluir(@PathVariable Long id){
+        service.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 }
