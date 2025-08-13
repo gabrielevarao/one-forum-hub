@@ -51,5 +51,10 @@ public class TopicoController {
         return ResponseEntity.ok(service.detalhar(id));
     }
 
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity editar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaçãoTopico dados){
+        return ResponseEntity.ok(service.editar(id, dados));
+    }
 
 }

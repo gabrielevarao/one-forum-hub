@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,8 +39,23 @@ public class TopicoService {
                 .map(DadosListagemTopico::new);
     }
 
-    public DadosDetalhamentoTopico detalhar (Long id){
+    public DadosDetalhamentoTopico detalhar(Long id){
         return new DadosDetalhamentoTopico(topicoRepository.getReferenceById(id));
     }
+
+    public DadosDetalhamentoTopico editar(Long id, DadosAtualizaçãoTopico dados){
+        Topico topico = topicoRepository.getReferenceById(id);
+
+        if (dados.titulo() != null){
+            topico.setTitulo(dados.titulo());
+        }
+
+        if (dados.mensagem() != null){
+            topico.setMensagem(dados.mensagem());
+        }
+
+        return new DadosDetalhamentoTopico(topico);
+    }
+
 
 }
