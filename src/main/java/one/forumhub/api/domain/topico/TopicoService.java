@@ -1,5 +1,8 @@
 package one.forumhub.api.domain.topico;
 
+import one.forumhub.api.domain.topico.validacoes.ValidadorAutorDiferente;
+import one.forumhub.api.domain.topico.validacoes.ValidadorTopicoDuplicado;
+import one.forumhub.api.domain.topico.validacoes.ValidadorTopicoExcluido;
 import one.forumhub.api.domain.usuario.Usuario;
 import one.forumhub.api.domain.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,19 @@ public class TopicoService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    ValidadorAutorDiferente validadorAutorDiferente;
+
+    @Autowired
+    ValidadorTopicoDuplicado validadorTopicoDuplicado;
+
+    @Autowired
+    ValidadorTopicoExcluido validadorTopicoExcluido;
+
     public DadosDetalhamentoTopico postar(DadosCadastroTopico dados, String nomeAutor){
+
+        validadorTopicoDuplicado.validar(dados.titulo(), dados.mensagem());
+
         Usuario autor = usuarioRepository.findByNome(nomeAutor);
         Topico topico = new Topico(dados, LocalDateTime.now());
 
@@ -35,15 +50,25 @@ public class TopicoService {
     }
 
     public Page<DadosListagemTopico> listar(Pageable pageable) {
+
         return topicoRepository.findAllByAtivoTrue(pageable)
                 .map(DadosListagemTopico::new);
     }
 
-    public DadosDetalhamentoTopico detalhar(Long id){
+    public DadosDetalhamentoTopico detalhar(Long id, Long idUsuario){
+
+        validadorAutorDiferente.validar(id, idUsuario);
+        validadorTopicoExcluido.validar(id);
+
         return new DadosDetalhamentoTopico(topicoRepository.getReferenceById(id));
     }
 
-    public DadosDetalhamentoTopico editar(Long id, DadosAtualizaçãoTopico dados){
+    public DadosDetalhamentoTopico editar(Long id, DadosAtualizaçãoTopico dados, Long idUsuario){
+
+        validadorAutorDiferente.validar(id, idUsuario);
+        validadorTopicoDuplicado.validar(dados.titulo(), dados.mensagem());
+        validadorTopicoExcluido.validar(id);
+
         Topico topico = topicoRepository.getReferenceById(id);
 
         if (dados.titulo() != null){
@@ -57,7 +82,11 @@ public class TopicoService {
         return new DadosDetalhamentoTopico(topico);
     }
 
-    public void excluir(Long id){
+    public void excluir(Long id, Long idUsuario){
+
+        validadorAutorDiferente.validar(id, idUsuario);
+        validadorTopicoExcluido.validar(id);
+
         Topico topico = topicoRepository.getReferenceById(id);
         topico.setAtivo(false);
     }

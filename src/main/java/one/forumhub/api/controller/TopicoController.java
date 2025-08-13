@@ -42,24 +42,36 @@ public class TopicoController {
 
     @GetMapping
     public ResponseEntity<Page<DadosListagemTopico>> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}, direction = Sort.Direction.DESC) Pageable pageable) {
+
         return ResponseEntity.ok(service.listar(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id){
-        return ResponseEntity.ok(service.detalhar(id));
+    public ResponseEntity detalhar(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Usuario usuarioAutenticado){
+
+        return ResponseEntity.ok(service.detalhar(id, usuarioAutenticado.getId()));
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity editar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaçãoTopico dados){
-        return ResponseEntity.ok(service.editar(id, dados));
+    public ResponseEntity editar(
+            @PathVariable Long id,
+            @RequestBody @Valid DadosAtualizaçãoTopico dados,
+            @AuthenticationPrincipal Usuario usuarioAutenticado){
+
+        return ResponseEntity.ok(service.editar(id, dados, usuarioAutenticado.getId()));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id){
-        service.excluir(id);
+    public ResponseEntity excluir(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Usuario usuarioAutenticado){
+
+        service.excluir(id, usuarioAutenticado.getId());
+
         return ResponseEntity.noContent().build();
     }
 

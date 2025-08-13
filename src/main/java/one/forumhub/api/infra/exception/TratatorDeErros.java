@@ -18,7 +18,7 @@ public class TratatorDeErros {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity tratarErro404() {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tópico não encontrado.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
